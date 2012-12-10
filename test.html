@@ -1,0 +1,92 @@
+    <?xml version="1.0" encoding="utf-8"?>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:widget="http://www.netvibes.com/ns/">
+        <head>
+			<!-- Application Metas -->
+            <meta name="author" content="Test User" />
+            <meta name="description" content="Current service status feed for Amazon CloudFront" />
+			<meta name="apiVersion" content="1.3" />
+			
+			<!-- Application Standalone emulation files -->
+            <link rel="stylesheet" type="text/css"
+                href="http://uwa.netvibes.com/lib/c/UWA/assets/css/standalone.css" />
+            <script type="text/javascript"
+                src="http://uwa.netvibes.com/lib/c/UWA/js/UWA_Standalone_Alone.js"></script>
+		
+			<title>Amazon CloudFront Service Status</title>
+
+			<widget:preferences>
+			  <preference name="category" type="list" label="Service Type" defaultValue="http://status.aws.amazon.com/rss/cloudfront.rss" onchange="refresh">
+				  <option value="http://status.aws.amazon.com/rss/cloudfront.rss" label="Amazon CloudFront"/>
+				  <option value="http://status.aws.amazon.com/rss/cloudsearch-us-east-1.rss" label="Amazon CloudSearch (N. Virginia)" />
+				  <option value="http://status.aws.amazon.com/rss/cloudwatch-us-west-1.rss" label="Amazon CloudWatch (N. California)" />
+				  <option value="http://status.aws.amazon.com/rss/cloudwatch-us-east-1.rss" label="Amazon CloudWatch (N. Virginia)" />
+			  </preference>
+			  <preference name="limit" type="range" label="Number of feeds to display" defaultValue="5" step="1" min="1" max="20" />
+			</widget:preferences>
+			
+            <!-- Application JavaScript Source -->
+            <script type="text/javascript">
+			  var YourWidgetName = {};
+
+			  YourWidgetName.dataInit = function() {
+				UWA.Data.getFeed(
+				  widget.getValue("category"),
+				  YourWidgetName.dataProcessor
+				);
+			  }
+			  
+			  YourWidgetName.dataProcessor = function(feed) {
+			     var feedList = widget.createElement('ul');
+				 feedList.className = 'nv-feedList';
+				 var j = 0;
+				 for(var i=0; i < feed.items.length; i++) {
+				   if (j >= widget.getValue('limit')) break;
+				   
+				   var item = feed.items[i];
+				   var li = widget.createElement('li');
+				   var a = widget.createElement('a');
+				   var displayTitle = '<span class="blueTitle">'+ item.title + '</span><br /><span class="lightGrey">' + item.date + '</span><br />'+ item.content.stripTags();
+				   a.innerHTML = displayTitle;
+				   a.href = widget.getValue("category");
+				   li.appendChild(a);
+				   feedList.appendChild(li);
+				   j++;
+				 }
+				 widget.setBody(feedList); 
+				 widget.addBody('<div class="myBg" style="text-align:center;"><img src="http://us.ft.com/widgets/images/ft_logo.png" border="0" /></div>');
+			  }
+			  
+			  widget.onLoad = function() {
+				YourWidgetName.dataInit();
+			  }
+            </script>
+			
+			<style>
+				.myBg
+				{
+					margin: 0px; padding: 0px; background:rgb(253, 214, 185); -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;
+				}
+				.lightGrey
+				{
+					color: #B1B1B1;
+					font-weight: bold;
+				}
+				.moduleContent {
+					padding:0px;
+					background:rgb(185, 214, 253);
+				}
+				
+				.blueTitle
+				{
+					color: #333534;
+					font-weight: bold;
+				}
+			</style>
+          </head>
+          <body>
+                <p>Loading...</p>
+          </body>
+    </html>
